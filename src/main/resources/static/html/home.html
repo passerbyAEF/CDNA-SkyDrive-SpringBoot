@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript" src="../js/home.js"></script>
+    <link href="../css/home.css" type="text/css" rel="stylesheet" />
+    <link rel="icon" href="data:;base64,=">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+</head>
+<body onload="OnLoadEvn()">
+    <header class="head">
+        <a class="logo" href="home.html">
+            <img src="../images/logo.png" height="18%" width="18%" />
+        </a>
+        <div class="user-info" id="user-info">
+            <span class="user-img-container"></span>
+            <span id="user-head-name">匿名用户</span>
+            <div class="down-btn">
+            </div>
+        </div>
+    </header>
+    <div class="temp" id="temp"></div>
+    <div class="user-controller" id="user-controller">
+        <div class="triangle"></div>
+        <div class="user-controller-info">
+            <span class="user-controller-img"></span>
+            <span class="user-controller-name" id="user-controller-name"></span>
+        </div>
+        <ul class="controller-list">
+            <li>更换头像</li>
+            <li>修改密码</li>
+            <li id="exit-login"><a onclick="ExitLogin()">退出登陆</a></li>
+        </ul>
+    </div>
+    <aside class="type">
+        <ul class="type-ul">
+            <li class="type-all">
+                <span>全部</span>
+            </li>
+            <li class="type-dosc">
+                <span>文档</span>
+            </li>
+            <li class="type-photo">
+                <span>图片</span>
+            </li>
+            <li class="type-vidio">
+                <span>多媒体</span>
+            </li>
+        </ul>
+        <div class="percent">
+            <div class="percent-container">
+                <span class="percent-text">0%</span>
+            </div>
+            <div class="disk-valume">
+                <p class="disk-text">0g/30g</p>
+            </div>
+        </div>
+    </aside>
+    <div class="action-bar">
+        <div class="action-btn">
+            <div id="upload-box">
+                <a class="input-btn" href="#" title="上传">
+                    <span class="input-text">上传</span>
+                    <form enctype="multipart/form-data" method="post" class="input-form" id="input-form">
+                        <input class="input-file" type="file" name="上传" id="input-file" multiple />
+                    </form>
+                </a>
+            </div>
+            <button onclick="LoopDown()">下载</button>
+            <button>删除</button>
+            <button onclick="NewDir()">新建文件夹</button>
+        </div>
+    </div>
+    <div class="type-text">
+        <p class="now-type-text" id="now-type-text">全部文件,共0个文件</p>
+    </div>
+    <section class="file-list">
+        <div class="file-info-title">
+            <ul class="file-info-container">
+                <li class="file-name-title"><span>文件名</span></li>
+                <li class="file-size-title"><span>文件大小</span></li>
+                <li class="file-date-title"><span>修改时间</span></li>
+            </ul>
+        </div>
+        <div class="file-list-container" id="file-list-container">
+        </div>
+        <div class="load-box" id="load-box">
+            <div class="load-head" id="load-box">
+                <h3 class="load-title">上传列表</h3>
+                <span class="load-close" onclick="LoadBoxClose()">x</span>
+            </div>
+            <div class="load-info-title-box">
+                <ul class="load-info-title">
+                    <li class="load-info-title-name"><span>文件名</span></li>
+                    <li class="load-info-title-size"><span>文件大小</span></li>
+                    <li class="load-info-title-status"><span>上传状态</span></li>
+                </ul>
+            </div>
+            <div class="load-file" id="load-file">
+            </div>
+        </div>
+    </section>
+</body>
+</html>

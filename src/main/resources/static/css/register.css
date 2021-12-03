@@ -1,0 +1,54 @@
+﻿
+
+.register-group {
+    width: 380px;
+    height: 400px;
+    position: relative;
+    left: 38%;
+    top: 20%;
+    border: 2px solid rgba(255, 255, 255,0.5);
+    border-radius: 30px;
+    margin: 0px;
+}
+
+
+
+.login-text {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: white;
+}
+
+
+.input {
+    position: absolute;
+}
+
+
+#username,#password {
+    width: 84px;
+}
+#register-error{
+    position:absolute;
+    top:30px;
+    right:25px;
+    color:red;
+    display:none;
+}
+.register-text {
+    color: white;
+    position: absolute;
+    top: 30px;
+    left: 50px;
+}
+#register-btn {
+    position: absolute;
+    left: 40px;
+    top: 10px;
+}
+#back-btn {
+    position: absolute;
+    top: 10px;
+    right: 40px;
+}
