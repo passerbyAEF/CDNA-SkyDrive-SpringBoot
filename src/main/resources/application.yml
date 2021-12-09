@@ -1,5 +1,17 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/?user=root
+    url: jdbc:mysql://127.0.0.1:3306/CDNA?user=root
     username: root
     password: 123456
+  redis:
+    database: 0
+    host: 0.0.0.0
+    port: 6379
+    password:
+    jedis:
+      pool:
+        max-active: 200
+        max-wait: -1
+        max-idle: 10
+        min-idle: 0
+    timeout: 6000

@@ -379,7 +379,7 @@ function CheckToken() {
             } else if (xmlhttp.status == 400 && xmlhttp.readyState == 4) {
                 document.cookie = "Token=;" + "expires=Thu, 01 Jan 1970 00: 00: 00 GMT";
                 window.alert("登陆已过期");
-                window.location.href = "../index.html";
+                window.location.href = "../../templates/login.html";
                 return;
             } else if ((xmlhttp.status != 200) && (xmlhttp.status != 400) && (xmlhttp.readyState == 4)) {
                 window.alert("服务器维护中");
@@ -389,7 +389,7 @@ function CheckToken() {
         }
     } else {
         window.alert("你还没有登陆！");
-        window.location.href = "../index.html";
+        window.location.href = "../../templates/login.html";
     }
     xmlhttp.send();
 }
@@ -431,7 +431,7 @@ function ExitLogin() {
     var Username = "UserName=root;expires=Thu, 01 Jan 1970 00: 00: 00 GMT;path=/";
     document.cookie = cook;
     document.cookie = Username;
-    window.location.href = "../index.html";
+    window.location.href = "../../templates/login.html";
 }
 
 //页面加载时，添加事件

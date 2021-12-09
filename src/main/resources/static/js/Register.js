@@ -27,7 +27,7 @@ function CheckReg() {
         var json = JSON.parse(xhttp.responseText);
         if (json.Message == "OK") {
             window.confirm(json.Data);
-            window.location.href = "../index.html";
+            window.location.href = "../../templates/login.html";
         } else {
             EchoRegistryError(json.Data);
         }
