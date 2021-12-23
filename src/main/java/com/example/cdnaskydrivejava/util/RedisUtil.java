@@ -16,7 +16,7 @@ public class RedisUtil {
     private RedisTemplate<String, Object> redisTemplate;
 
     public void add(String key, String value) {
-        redisTemplate.opsForValue().set(key, value,30, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, value,30, TimeUnit.MINUTES);
     }
 
     public void removeSet(String key) {

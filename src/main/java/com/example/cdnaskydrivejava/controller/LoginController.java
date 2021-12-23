@@ -1,22 +1,18 @@
 package com.example.cdnaskydrivejava.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.cdnaskydrivejava.model.UserMode;
-import com.example.cdnaskydrivejava.service.UserService;
 import com.example.cdnaskydrivejava.util.RedisUtil;
 import com.example.cdnaskydrivejava.util.ReturnMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 
 @ResponseBody
@@ -25,22 +21,34 @@ import java.util.Date;
 public class LoginController {
 
     @Autowired
-    UserService userService;
+    com.example.cdnaskydrivejava.service.impl.UserServiceImpl UserServiceImpl;
     @Autowired
     RedisUtil redisUtil;
 
-    @PostMapping("Login")
-    ReturnMode<String> Login(HttpServletResponse response, @RequestBody UserMode user) {
+    @PostMapping("login")
+    ReturnMode<String> Login(HttpServletResponse response, @RequestParam String Name,@RequestParam String Pwds) throws IOException {
+        UserMode user=new UserMode();
+        user.setName(Name);
+        user.setPwd(Pwds);
         if (StringUtils.isEmpty(user.getName()) || StringUtils.isEmpty(user.getPwd())) {
+            response.sendRedirect("/login?meg=null");
             return new ReturnMode<>("用户名或密码为空！", "Error");
         }
-        UserMode userMode = userService.getOne(new QueryWrapper<UserMode>().eq("UserName", user.getName()).eq("PassWord", user.getPwd()));
+        UserMode userMode = (UserMode) UserServiceImpl.loadUserByUsername(user.getUsername());
         if (userMode == null) {
-            return new ReturnMode<>("用户名密码错误", "Error");
+            response.sendRedirect("/login?meg=usernull");
+            return new ReturnMode<>("用户不存在！", "Error");
         }
-        String hashStr = DigestUtils.md5DigestAsHex((userMode.getId() + ":" + new Date().toString()).getBytes());
+        if (!userMode.getPassword().equals(user.getPassword())) {
+            response.sendRedirect("/login?meg=uperror");
+            return new ReturnMode<>("用户名或密码错误！", "Error");
+        }
+        String hashStr = DigestUtils.md5DigestAsHex((userMode.getName() + ":" + new Date()).getBytes());
         redisUtil.add(hashStr, JSON.toJSONString(userMode));
-        response.addCookie(new Cookie("Token", hashStr));
+        Cookie cookie=new Cookie("Token", hashStr);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        response.sendRedirect("/");
         return new ReturnMode<>(hashStr, "OK");
     }
 }

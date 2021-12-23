@@ -6,11 +6,13 @@
     <title></title>
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="../js/md5.js"></script>
+    <script src="../js/util.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="icon" href="data:;base64,=">
 </head>
-<body onload="CheckLoginToken()">
+<body onload="start()">
 
     <div class="head">
         <a href="#" class="logo">
@@ -28,11 +30,11 @@
         <div class="input">
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">账号</span>
-                <input type="text" class="form-control" placeholder="Username" id="input-user" aria-describedby="basic-addon1" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" autofocus>
+                <input type="text" name="Name" class="form-control" placeholder="Username" id="input-user" aria-describedby="basic-addon1" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;" autofocus>
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">密码</span>
-                <input type="password" class="form-control" placeholder="Password" id="input-passwd" aria-describedby="basic-addon1" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;">
+                <input type="password" name="Pwds" class="form-control" placeholder="Password" id="input-passwd" aria-describedby="basic-addon1" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;">
             </div>
         </div>
     </div>
