@@ -22,11 +22,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserMode> implement
 
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         UserMode user = this.getOne(new QueryWrapper<UserMode>().eq("UserName", s));
-        if(user==null) return null;
+        if (user == null) return null;
         user.setAuthorities(getAuthorities());
         return user;
     }
@@ -41,4 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserMode> implement
         return authList;
     }
 
+    @Override
+    public Integer getRootUrlId(UserMode user) {
+        return userMapper.getRootUrlId(user.getId());
+    }
 }

@@ -1,0 +1,32 @@
+package com.example.cdnaskydrivejava.model;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.util.Date;
+
+/**
+ * 用于承载数据库表数据的实体类
+ */
+@Data
+@TableName("userfiletable")
+public class FileTableDataMode {
+    @TableId("ID")
+    Integer id;
+    @TableField("name")
+    String name;
+    @TableField("Value")
+    String value;
+    @TableField("State")
+    Integer state;
+    @TableField("time")
+    Date time;
+    @TableField("UP")
+    Integer UP;
+
+    public Boolean isDir() {
+        return state == 1;
+    }
+}

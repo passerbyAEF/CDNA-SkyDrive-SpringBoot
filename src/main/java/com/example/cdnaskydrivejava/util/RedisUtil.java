@@ -15,8 +15,12 @@ public class RedisUtil {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public void add(String key, String value) {
+    public void addAndSetTimeOut(String key, String value) {
         redisTemplate.opsForValue().set(key, value,30, TimeUnit.MINUTES);
+    }
+
+    public void add(String key, String value) {
+        redisTemplate.opsForValue().set(key, value);
     }
 
     public void removeSet(String key) {
@@ -24,6 +28,11 @@ public class RedisUtil {
     }
 
     public String get(String key) {
-        return Objects.requireNonNull(redisTemplate.opsForValue().get(key)).toString();
+        try {
+            return Objects.requireNonNull(redisTemplate.opsForValue().get(key)).toString();
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 }

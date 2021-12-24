@@ -15,3 +15,8 @@ spring:
         max-idle: 10
         min-idle: 0
     timeout: 6000
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 1000MB
+savePath: E:\diver

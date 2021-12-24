@@ -1,4 +1,4 @@
-﻿var NowPath = "./";
+﻿var NowPath;
 
 //设置事件背景色
 function ChangeBackground(html, color) {
@@ -6,23 +6,28 @@ function ChangeBackground(html, color) {
         html.style.backgroundColor = color;
     }
 }
+
 //设置事件样式
 function SetDisplay(html, css) {
     return function () {
         html.style.display = css;
     }
 }
+
 //对文件列表进行排序
 function sortByKey(array, key) {
     return array.sort(function (a, b) {
-        var x = a[key]; var y = b[key];
+        var x = a[key];
+        var y = b[key];
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
 }
+
 //设置size对应的单位
 function SizeUnit(size) {
     return size / 1024 > 1 ? (size / 1024 / 1024 > 1 ? Math.floor(size / 1024 / 1024) + "M" : Math.floor(size / 1024) + "kb") : size + "b";
 }
+
 //返回上级目录
 function BackDir() {
     if (NowPath == "./") {
@@ -33,6 +38,7 @@ function BackDir() {
     NowPath = path.join("/");
     GetUserFileList(NowPath);
 }
+
 //关闭上传窗体
 function LoadBoxClose() {
     var CloseHTML = document.getElementsByClassName("load-box");
@@ -40,6 +46,7 @@ function LoadBoxClose() {
         CloseHTML[i].style.display = "none";
     }
 }
+
 //上传文件
 function PostFile() {
     return function () {
@@ -79,7 +86,7 @@ function PostFile() {
         })
         xhr.send(form);
         xhr.onreadystatechange = function () {
-            if (xhr.status == 200 && JSON.parse(xhr.responseText).Message == "OK" && xhr.readyState == 4) {
+            if (xhr.status == 200 && JSON.parse(xhr.responseText).message == "OK" && xhr.readyState == 4) {
                 for (i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
                     PreBox[i].innerHTML = "上传成功";
                 }
@@ -105,6 +112,7 @@ function PushBox() {
         box[i].style.display = "block";
     }
 }
+
 //创建上传窗体
 function CreateLoadBox() {
     var BoxInfo = document.getElementById("load-file");
@@ -125,6 +133,7 @@ function CreateLoadBox() {
         }
     }
 }
+
 //清除用户当前列表
 function ClearFileList() {
     var Box = document.getElementById("file-list-container");
@@ -143,39 +152,33 @@ function ClearFileList() {
 //获取用户文件列表
 function GetUserFileList(path) {
     ClearFileList();
-    if (path != "./") {
-        NowPath = NowPath + path + "\/";
-    }
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/api/List");
-    xmlhttp.send(NowPath);
-    xmlhttp.onreadystatechange = GetFileList(xmlhttp);
-}
-function GetFileList(xmlhttp) {
-    return function () {
-        if (xmlhttp.status == 200 && xmlhttp.readyState == 4) {
-            var FileList = JSON.parse(JSON.parse(xmlhttp.responseText).Data);
+    var data = {};
+    data.url=path;
+    var success = function (message) {
+        if (message.message === "OK") {
+            var FileList = message.data;
             FindFileType(FileList);
-        } else {
-            return;
         }
     }
+    post("/api/list", data, success);
 }
+
 //将文件列表分类
 function FindFileType(FileList) {
     var FileDir = JSON.parse("[]");
     var File = JSON.parse("[]");
     for (i in FileList) {
-        if (FileList[i].type == "dir") {
+        if (FileList[i].type === "dir") {
             FileDir.push(FileList[i]);
         } else {
             File.push(FileList[i]);
         }
     }
-    document.getElementById("now-type-text").innerHTML = "全部文件,共" + file.length + "个文件";
+    document.getElementById("now-type-text").innerHTML = "全部文件,共" + File.length + "个文件";
     CreateFileDirList(FileDir);
     CreateFileList(File);
 }
+
 //创建目录列表
 function CreateFileDirList(Dir) {
     var FileBox = document.getElementById("file-list-container");
@@ -183,7 +186,9 @@ function CreateFileDirList(Dir) {
         var Back = document.createElement("a");
         Back.id = "back-bnt";
         Back.innerHTML = "返回上级";
-        Back.onclick = function () { BackDir() };
+        Back.onclick = function () {
+            BackDir()
+        };
         FileBox.appendChild(Back);
     }
     if (Dir.length > 1) {
@@ -218,7 +223,9 @@ function CreateFileDirList(Dir) {
         A.style.display = "block";
         A.style.height = "100%";
         A.style.cursor = "pointer";
-        A.onclick = function (a) { GetUserFileList(this.name) };
+        A.onclick = function (a) {
+            GetUserFileList(this.name)
+        };
         DirList[i].appendChild(A);
         var Div = document.createElement("div");
         Div.className = "file-handle";
@@ -231,6 +238,7 @@ function CreateFileDirList(Dir) {
         LiDir[i].style.cursor = "pointer";
     }
 }
+
 //创建文件列表
 function CreateFileList(File) {
     if (File.length > 1) {
@@ -291,6 +299,7 @@ function Down(name) {
     };
     xmlhttp.send();
 }
+
 //多个下载
 function LoopDown() {
     var checkbox = document.querySelectorAll(".checkbox:checked");
@@ -298,6 +307,7 @@ function LoopDown() {
         Down(checkbox[i].value);
     }
 }
+
 //新建文件夹
 function AddDir(name) {
     var xmlhttp = new XMLHttpRequest();
@@ -313,6 +323,7 @@ function AddDir(name) {
     }
     xmlhttp.send();
 }
+
 //新建一个输入列表
 function NewDir() {
     if (document.getElementsByClassName("dir-input").length == 0) {
@@ -326,7 +337,18 @@ function NewDir() {
             Ul.appendChild(Li);
         }
         var InnerLi = Ul.childNodes[0];
-        var InputEL = [{ class: "dir-input", type: "text", onclick: "", id: "dir-name" }, { class: "dir-input", type: "button", onclick: function () { AddDir(document.getElementById("dir-name").value) }, id: "dir-true" }, { class: "dir-input", type: "button", onclick: function () { UnAddDir() }, id: "dir-false" }];
+        var InputEL = [{class: "dir-input", type: "text", onclick: "", id: "dir-name"}, {
+            class: "dir-input",
+            type: "button",
+            onclick: function () {
+                AddDir(document.getElementById("dir-name").value)
+            },
+            id: "dir-true"
+        }, {
+            class: "dir-input", type: "button", onclick: function () {
+                UnAddDir()
+            }, id: "dir-false"
+        }];
         for (i = 0; i < 3; i++) {
             var input = document.createElement("input");
             input.className = InputEL[i].class;
@@ -355,11 +377,13 @@ function NewDir() {
         return;
     }
 }
+
 //取消新建文件夹输入
 function UnAddDir() {
     var RmList = document.getElementsByClassName("file")[0];
     RmList.remove();
 }
+
 //添加列表动态样式
 function AddEven() {
     var evntul = document.querySelectorAll(".file-list-container ul");
@@ -369,30 +393,7 @@ function AddEven() {
         evntul[i].addEventListener("mouseout", SetDisplay(han[i], "none"));
     }
 }
-function CheckToken() {
-    if (document.cookie.indexOf("Token") != -1) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "/api/Token");
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.status == 200 && xmlhttp.readyState == 4) {
-                return;
-            } else if (xmlhttp.status == 400 && xmlhttp.readyState == 4) {
-                document.cookie = "Token=;" + "expires=Thu, 01 Jan 1970 00: 00: 00 GMT";
-                window.alert("登陆已过期");
-                window.location.href = "../../templates/login.html";
-                return;
-            } else if ((xmlhttp.status != 200) && (xmlhttp.status != 400) && (xmlhttp.readyState == 4)) {
-                window.alert("服务器维护中");
-                window.location.href = "about:blank";
-                return;
-            }
-        }
-    } else {
-        window.alert("你还没有登陆！");
-        window.location.href = "../../templates/login.html";
-    }
-    xmlhttp.send();
-}
+
 //显示用户列表方法
 function SetContorBox() {
     var InfoBox = document.getElementById("user-info");
@@ -405,11 +406,11 @@ function SetContorBox() {
         }
     });
     TempBox.addEventListener("mouseover", function () {
-        TempBox.style.display = "block";
-        for (i = 0; i < ControllerBox.length; i++) {
-            ControllerBox[i].style.display = "block";
+            TempBox.style.display = "block";
+            for (i = 0; i < ControllerBox.length; i++) {
+                ControllerBox[i].style.display = "block";
+            }
         }
-    }
     );
     TempBox.addEventListener("mouseout", function () {
         setTimeout(function () {
@@ -421,10 +422,13 @@ function SetContorBox() {
     })
     var BoxAll = document.querySelectorAll(".user-controller *");
     for (i = 0; i < BoxAll.length; i++) {
-        BoxAll[i].addEventListener("mouseover", function () { BoxAll[i].style.display = "block"; })
+        BoxAll[i].addEventListener("mouseover", function () {
+            BoxAll[i].style.display = "block";
+        })
     }
 
 }
+
 //退出登陆
 function ExitLogin() {
     var cook = "Token=;expires=Thu, 01 Jan 1970 00: 00: 00 GMT;path=/";
@@ -434,9 +438,19 @@ function ExitLogin() {
     window.location.href = "../../templates/login.html";
 }
 
-//页面加载时，添加事件
-function OnLoadEvn() {
-    CheckToken();
+//获取根目录
+function GetRootUrl() {
+    var data
+    var success = function (message) {
+        if (message.message === "OK") {
+            NowPath = message.data;
+        }
+    }
+    get("api/rooturl", success);
+    return data;
+}
+
+function Load() {
     GetUserFileList(NowPath);
     var inputbtn = document.getElementById("input-file");
     inputbtn.addEventListener("change", PostFile());
@@ -479,4 +493,17 @@ function OnLoadEvn() {
         isdown = false;
         loadbox.style.cursor = 'default';
     }
+}
+
+//页面加载时，添加事件
+function OnLoadEvn() {
+    GetRootUrl();
+    var fun = function () {
+        if (NowPath !== undefined) {
+            Load();
+        } else {
+            setTimeout(fun, 100);
+        }
+    };
+    fun()
 }

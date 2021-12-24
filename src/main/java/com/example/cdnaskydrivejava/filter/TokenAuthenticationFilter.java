@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -35,20 +34,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 token = c.getValue();
         }
         if(token!=null){
-            JSONObject redisJson = JSONObject.parseObject(redisUtil.get(token));
-            UserMode user = new UserMode();
-            user.setFileId(Integer.parseInt(redisJson.getString("fileId")));
-            user.setId(Integer.parseInt(redisJson.getString("id")));
-            user.setName(redisJson.getString("name"));
-            user.setPwd(redisJson.getString("pwd"));
-            List<GrantedAuthority> authList = new ArrayList<>();
-            for(Object o: redisJson.getJSONArray("authorities")){
-                JSONObject j=(JSONObject) o;
-                authList.add(new SimpleGrantedAuthority(j.getString("authority")));
+            String str=redisUtil.get(token);
+            if(str!=null){
+                JSONObject redisJson = JSONObject.parseObject(str);
+                UserMode user = new UserMode();
+                user.setFileId(Integer.parseInt(redisJson.getString("fileId")));
+                user.setId(Integer.parseInt(redisJson.getString("id")));
+                user.setName(redisJson.getString("name"));
+                user.setPwd(redisJson.getString("pwd"));
+                List<GrantedAuthority> authList = new ArrayList<>();
+                for(Object o: redisJson.getJSONArray("authorities")){
+                    JSONObject j=(JSONObject) o;
+                    authList.add(new SimpleGrantedAuthority(j.getString("authority")));
+                }
+                user.setAuthorities(authList);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            user.setAuthorities(authList);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request,response);
     }
