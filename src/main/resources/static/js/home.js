@@ -34,10 +34,14 @@ function BackDir() {
     if (NowPath === rootPath) {
         return;
     }
-    var path = NowPath.split("/");
-    path.splice((path.length - 2), 1);
-    NowPath = path.join("/");
-    GetUserFileList(NowPath);
+    var data = {Dir: NowPath}
+    var suc = function (data) {
+        if (data.message === "OK") {
+            NowPath = data.data;
+            GetUserFileList(NowPath);
+        }
+    }
+    post("api/BackDir", data, suc, null);
 }
 
 //关闭上传窗体
@@ -171,7 +175,7 @@ function GetUserFileList(path) {
             FindFileType(FileList);
         }
     }
-    post("/api/list", data, success);
+    post("/api/list", data, success, null);
 }
 
 //将文件列表分类
@@ -230,11 +234,12 @@ function CreateFileDirList(Dir) {
         DirList[i].appendChild(CheckBox);
         var A = document.createElement("a");
         A.innerHTML = "<span>" + Dir[i].name;
-        A.name = Dir[i].name;
+        A.name = Dir[i].id;
         A.style.display = "block";
         A.style.height = "100%";
         A.style.cursor = "pointer";
         A.onclick = function (a) {
+            NowPath = this.name;
             GetUserFileList(this.name)
         };
         DirList[i].appendChild(A);
@@ -280,7 +285,7 @@ function CreateFileList(File) {
         Div.innerHTML = "<img src=\"../images/mv.png\">" +
             "<img src=\"../images/cp.png\">" +
             "<img src=\"../images/rename.png\">" +
-            "<img src=\"../images/down.png\" id=\"" + File[i].id + "\"" + "onclick=\"Down('"+File[i].name+"',this.id)\"" + ">" +
+            "<img src=\"../images/down.png\" id=\"" + File[i].id + "\"" + "onclick=\"Down('" + File[i].name + "',this.id)\"" + ">" +
             "<img src=\"../images/delete.png\">";
         CheckBox.type = "checkbox";
         CheckBox.className = "checkbox";
@@ -292,7 +297,7 @@ function CreateFileList(File) {
 }
 
 //下载文件方法
-function Down(fileName,id) {
+function Down(fileName, id) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "/api/Load/Down", true);
     xmlhttp.responseType = "blob";
@@ -323,18 +328,14 @@ function LoopDown() {
 
 //新建文件夹
 function AddDir(name) {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/api/AddDir");
-    xmlhttp.setRequestHeader("Path", NowPath);
-    xmlhttp.setRequestHeader("DirName", name);
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.status == 200) {
-            GetUserFileList(NowPath);
-        } else {
-            window.alert("新建文件夹错误");
-        }
+    var data = {Path: NowPath, DirName: name};
+    var suc = function (me) {
+        GetUserFileList(NowPath);
     }
-    xmlhttp.send();
+    var err = function (me) {
+        window.alert("新建文件夹错误");
+    }
+    post("/api/AddDir", data, suc)
 }
 
 //新建一个输入列表
@@ -460,7 +461,7 @@ function GetRootUrl() {
             rootPath = NowPath;
         }
     }
-    get("api/rooturl",null, success);
+    get("api/rooturl", null, success);
     return data;
 }
 

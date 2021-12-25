@@ -62,4 +62,18 @@ public class FileListController extends BaseController {
         UserMode user = (UserMode) getUser().getPrincipal();
         return OK(userService.getRootUrlId(user));
     }
+
+    @PostMapping("AddDir")
+    public ReturnMode<Object> addDir(@RequestBody Map<String, String> map) {
+        UserMode user = (UserMode) getUser().getPrincipal();
+        if (fileListService.addDir(map.get("DirName"), Integer.parseInt(map.get("Path")), user.getId())) {
+            return OK("添加成功");
+        }
+        return Error("用户权限错误");
+    }
+
+    @PostMapping("BackDir")
+    public ReturnMode<Object> backDir(@RequestBody Map<String, Integer> map){
+        return OK(fileListService.toBackDir(map.get("Dir")));
+    }
 }

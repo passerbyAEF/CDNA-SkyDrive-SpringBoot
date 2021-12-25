@@ -7,4 +7,8 @@ public interface FileListService {
     Boolean isDirOfUser(Integer dirId, Integer userid);
 
     List<Object> findOfDir(Integer dirId);
+
+    Boolean addDir(String name,Integer parentsDir, Integer userid);
+
+    Integer toBackDir(Integer dirId);
 }

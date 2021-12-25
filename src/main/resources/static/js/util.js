@@ -1,4 +1,4 @@
-function post(url, data,suc) {
+function post(url, data,suc,err) {
     $.ajax({
         type: "POST",
         url: url,
@@ -6,7 +6,8 @@ function post(url, data,suc) {
         dataType: "JSON",
         contentType : "application/json",
         timeout: 4000,
-        success:suc
+        success:suc,
+        error:err
     });
 }
 

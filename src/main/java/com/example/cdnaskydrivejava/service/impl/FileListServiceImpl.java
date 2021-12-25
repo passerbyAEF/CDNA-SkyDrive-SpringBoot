@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,5 +37,26 @@ public class FileListServiceImpl implements FileListService {
             }
         }
         return datalist;
+    }
+
+    @Override
+    public Boolean addDir(String name, Integer parentsDir, Integer userId) {
+        if (!isDirOfUser(parentsDir, userId)) {
+            return false;
+        }
+        FileTableDataMode mode = new FileTableDataMode();
+        mode.setUserId(userId);
+        mode.setTime(new Date());
+        mode.setUP(parentsDir);
+        mode.setName(name);
+        mode.setState(1);
+        fileListMapper.insert(mode);
+        return true;
+    }
+
+    @Override
+    public Integer toBackDir(Integer dirId) {
+        FileTableDataMode mode = fileListMapper.selectById(dirId);
+        return mode.getUP();
     }
 }
