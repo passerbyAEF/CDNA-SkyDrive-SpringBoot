@@ -86,20 +86,30 @@ function PostFile() {
         })
         xhr.send(form);
         xhr.onreadystatechange = function () {
-            if (xhr.status == 200 && JSON.parse(xhr.responseText).message == "OK" && xhr.readyState == 4) {
-                for (i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
-                    PreBox[i].innerHTML = "上传成功";
-                }
-                GetUserFileList(NowPath);
-                var FileValue = document.getElementById("input-file");
-                FileValue.value = null;
-            } else {
-                for (i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
+            var FileValue = document.getElementById("input-file");
+            var fun=function () {
+                for (var i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
                     PreBox[i].innerHTML = "上传失败";
                     PreBox[i].style.backgroundColor = "#db2828";
-                    var FileValue = document.getElementById("input-file");
                     FileValue.value = null;
                 }
+            }
+
+            if (xhr.status === 200) {
+                if(xhr.readyState === 4){
+                    var json = JSON.parse(xhr.responseText)
+                    if (json.message === "OK") {
+                        for (var i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
+                            PreBox[i].innerHTML = "上传成功";
+                        }
+                        GetUserFileList(NowPath);
+                        FileValue.value = null;
+                    } else if (json.message === "ERROR") {
+                        fun();
+                    }
+                }
+            } else {
+                fun();
             }
         }
     }
@@ -153,7 +163,7 @@ function ClearFileList() {
 function GetUserFileList(path) {
     ClearFileList();
     var data = {};
-    data.url=path;
+    data.url = path;
     var success = function (message) {
         if (message.message === "OK") {
             var FileList = message.data;
