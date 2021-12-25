@@ -1,5 +1,6 @@
 package com.example.cdnaskydrivejava.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Data
 @TableName("userfiletable")
 public class FileTableDataMode {
-    @TableId("ID")
+    @TableId(value = "ID",type = IdType.AUTO)
     Integer id;
     @TableField("name")
     String name;
@@ -25,6 +26,8 @@ public class FileTableDataMode {
     Date time;
     @TableField("UP")
     Integer UP;
+    @TableField("userId")
+    Integer userId;
 
     public Boolean isDir() {
         return state == 1;

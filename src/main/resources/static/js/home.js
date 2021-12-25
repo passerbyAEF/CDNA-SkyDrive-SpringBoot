@@ -57,7 +57,7 @@ function PostFile() {
         }
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "/api/Load/Up", true);
-        xhr.setRequestHeader("Path", "./")
+        xhr.setRequestHeader("Path", NowPath)
         PushBox();
         CreateLoadBox();
         xhr.upload.addEventListener("progress", function (e) {

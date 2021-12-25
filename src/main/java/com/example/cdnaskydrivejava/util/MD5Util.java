@@ -16,7 +16,6 @@ public class MD5Util {
             while ((length = fis.read(buffer, 0, 1024)) != -1) {
                 md.update(buffer, 0, length);
             }
-            fis.close();
 
             //转换并返回包含16个元素字节数组,返回数值范围为-128到127
             byte[] md5Bytes  = md.digest();

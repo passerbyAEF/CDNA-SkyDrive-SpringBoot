@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/CDNA?user=root
+    url: jdbc:mysql://127.0.0.1:3306/CDNA?characterEncoding=utf-8
     username: root
     password: 123456
   redis:
@@ -20,3 +20,4 @@ spring:
       max-file-size: 200MB
       max-request-size: 1000MB
 savePath: E:\diver
+bufferPath: E:\bufferDrive

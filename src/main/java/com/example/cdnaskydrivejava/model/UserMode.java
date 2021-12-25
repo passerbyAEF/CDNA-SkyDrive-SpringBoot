@@ -1,6 +1,7 @@
 package com.example.cdnaskydrivejava.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,7 +16,7 @@ import java.util.List;
 @Data
 @TableName("usertable")
 public class UserMode implements UserDetails {
-    @TableId("ID")
+    @TableId(value = "ID",type = IdType.AUTO)
     Integer id;
     @JsonProperty("Name")
     @TableField("UserName")

@@ -6,7 +6,6 @@ import com.example.cdnaskydrivejava.model.FileMode;
 import com.example.cdnaskydrivejava.model.FileTableDataMode;
 import com.example.cdnaskydrivejava.service.FileListService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -15,9 +14,6 @@ import java.util.List;
 
 @Service
 public class FileListServiceImpl implements FileListService {
-
-    @Value("${savePath}")
-    String path;
 
     @Autowired
     FileListMapper fileListMapper;
