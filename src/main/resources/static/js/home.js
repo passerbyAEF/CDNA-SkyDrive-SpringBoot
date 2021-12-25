@@ -1,4 +1,5 @@
 ﻿var NowPath;
+var rootPath;
 
 //设置事件背景色
 function ChangeBackground(html, color) {
@@ -25,12 +26,12 @@ function sortByKey(array, key) {
 
 //设置size对应的单位
 function SizeUnit(size) {
-    return size / 1024 > 1 ? (size / 1024 / 1024 > 1 ? Math.floor(size / 1024 / 1024) + "M" : Math.floor(size / 1024) + "kb") : size + "b";
+    return size / 1024.0 > 1 ? (size / 1024.0 / 1024 > 1 ? Math.floor(size / 1024.0 / 1024) + "M" : Math.floor(size / 1024.0) + "kb") : size + "b";
 }
 
 //返回上级目录
 function BackDir() {
-    if (NowPath == "./") {
+    if (NowPath === rootPath) {
         return;
     }
     var path = NowPath.split("/");
@@ -87,7 +88,7 @@ function PostFile() {
         xhr.send(form);
         xhr.onreadystatechange = function () {
             var FileValue = document.getElementById("input-file");
-            var fun=function () {
+            var fun = function () {
                 for (var i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
                     PreBox[i].innerHTML = "上传失败";
                     PreBox[i].style.backgroundColor = "#db2828";
@@ -96,7 +97,7 @@ function PostFile() {
             }
 
             if (xhr.status === 200) {
-                if(xhr.readyState === 4){
+                if (xhr.readyState === 4) {
                     var json = JSON.parse(xhr.responseText)
                     if (json.message === "OK") {
                         for (var i = PreBox.length - fileobj.length; i < PreBox.length; i++) {
@@ -192,7 +193,7 @@ function FindFileType(FileList) {
 //创建目录列表
 function CreateFileDirList(Dir) {
     var FileBox = document.getElementById("file-list-container");
-    if (NowPath != "./") {
+    if (NowPath !== rootPath) {
         var Back = document.createElement("a");
         Back.id = "back-bnt";
         Back.innerHTML = "返回上级";
@@ -276,7 +277,11 @@ function CreateFileList(File) {
         var Div = document.createElement("div");
         Div.className = "file-handle";
         Div.style.display = "none";
-        Div.innerHTML = "<img src=\"../images/mv.png\">" + "<img src=\"../images/cp.png\">" + "<img src=\"../images/rename.png\">" + "<img src=\"../images/down.png\" id=\"" + File[i].name + "\"" + "onclick=\"Down(this.id)\"" + ">" + "<img src=\"../images/delete.png\">";
+        Div.innerHTML = "<img src=\"../images/mv.png\">" +
+            "<img src=\"../images/cp.png\">" +
+            "<img src=\"../images/rename.png\">" +
+            "<img src=\"../images/down.png\" id=\"" + File[i].id + "\"" + "onclick=\"Down('"+File[i].name+"',this.id)\"" + ">" +
+            "<img src=\"../images/delete.png\">";
         CheckBox.type = "checkbox";
         CheckBox.className = "checkbox";
         CheckBox.value = File[i].name;
@@ -287,24 +292,22 @@ function CreateFileList(File) {
 }
 
 //下载文件方法
-function Down(name) {
+function Down(fileName,id) {
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/api/Load/Down", true);
+    xmlhttp.open("GET", "/api/Load/Down", true);
     xmlhttp.responseType = "blob";
-    xmlhttp.setRequestHeader("Path", NowPath + name);
+    xmlhttp.setRequestHeader("File", id);
     xmlhttp.onreadystatechange = function (data) {
-        if (xmlhttp.status == 200 && xmlhttp.readyState == 4) {
+        if (xmlhttp.status === 200 && xmlhttp.readyState === 4) {
             var content = xmlhttp.response;
             var elink = document.createElement('a');
-            elink.download = name;
+            elink.download = fileName;
             elink.style.display = 'none';
             var blob = new Blob([content]);
             elink.href = URL.createObjectURL(blob);
             document.body.appendChild(elink);
             elink.click();
             document.body.removeChild(elink);
-        } else {
-            return;
         }
     };
     xmlhttp.send();
@@ -454,9 +457,10 @@ function GetRootUrl() {
     var success = function (message) {
         if (message.message === "OK") {
             NowPath = message.data;
+            rootPath = NowPath;
         }
     }
-    get("api/rooturl", success);
+    get("api/rooturl",null, success);
     return data;
 }
 
@@ -486,7 +490,7 @@ function Load() {
         loadbox.style.cursor = "move";
     }
     window.onmousemove = function (e) {
-        if (isdown == false) {
+        if (isdown === false) {
             return;
         }
         //获取x和y

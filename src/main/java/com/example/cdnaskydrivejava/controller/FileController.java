@@ -6,13 +6,14 @@ import com.example.cdnaskydrivejava.util.BaseController;
 import com.example.cdnaskydrivejava.util.ReturnMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @ResponseBody
@@ -25,15 +26,23 @@ public class FileController extends BaseController {
 
 
     @PostMapping("Up")
-    public ReturnMode<Object> fileUp(HttpServletRequest request, @RequestParam Map<String, MultipartFile> file) {
+    public ReturnMode<Object> fileUpLoad(HttpServletRequest request, @RequestParam Map<String, MultipartFile> file) {
         Integer dirId = Integer.parseInt(request.getHeader("Path"));
         UserMode user = (UserMode) getUser().getPrincipal();
-        int num = 0;
+        List<Integer> list = new ArrayList<>();
         for (MultipartFile multipartFile : file.values()) {
-            if (fileService.addFile(multipartFile, dirId,user.getId()))
-                num++;
+            Integer i = fileService.addFile(multipartFile, dirId, user.getId());
+            if (i != -1)
+                list.add(i);
         }
-        return OK("你成功上传" + num + "个");
+        return OK(list);
+    }
+
+    @GetMapping("Down")
+    public void fileDownLoad(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Integer fileId = Integer.parseInt(request.getHeader("File"));
+        UserMode user = (UserMode) getUser().getPrincipal();
+        fileService.loadFile(response,fileId,user.getId());
     }
 
 }

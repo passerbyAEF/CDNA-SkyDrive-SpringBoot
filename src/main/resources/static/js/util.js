@@ -10,10 +10,11 @@ function post(url, data,suc) {
     });
 }
 
-function get(url,suc) {
+function get(url,header,suc) {
     $.ajax({
         type: "GET",
         url: url,
+        headers:header,
         timeout: 4000,
         success:suc
     });

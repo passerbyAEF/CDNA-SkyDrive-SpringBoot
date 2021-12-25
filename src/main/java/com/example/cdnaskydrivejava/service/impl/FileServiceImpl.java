@@ -9,11 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -29,7 +32,7 @@ public class FileServiceImpl implements FileService {
     FileListMapper fileListMapper;
 
     @Override
-    public boolean addFile(MultipartFile file, Integer dirId, Integer userId) {
+    public Integer addFile(MultipartFile file, Integer dirId, Integer userId) {
         String bufferFileName = UUID.randomUUID().toString();
         try (InputStream inputStream = file.getInputStream();
              OutputStream outputStream = new FileOutputStream(bufferPath + "\\" + bufferFileName)) {
@@ -41,7 +44,7 @@ public class FileServiceImpl implements FileService {
             if (f.exists()) {
                 f.delete();
             }
-            return false;
+            return -1;
         }
 
         //计算MD5判断是否有重复
@@ -49,10 +52,11 @@ public class FileServiceImpl implements FileService {
         try (InputStream inputStream = new FileInputStream(bufferPath + "\\" + bufferFileName)) {
             md5Str = MD5Util.md5HashCode32(inputStream);
         } catch (IOException e) {
-            return false;
+            return -1;
         }
 
-        if (fileMapper.findHash(md5Str) == 0) {
+        String m = fileMapper.findPathByHash(md5Str);
+        if (!StringUtils.hasText(m)) {
             try (OutputStream outputStream = new FileOutputStream(savePath + "\\" + md5Str);
                  InputStream inputStream = new FileInputStream(bufferPath + "\\" + bufferFileName)) {
                 //没保存就保存
@@ -64,7 +68,7 @@ public class FileServiceImpl implements FileService {
                 if (f.exists()) {
                     f.delete();
                 }
-                return false;
+                return -1;
             }
         }
         File f = new File(bufferPath + "\\" + bufferFileName);
@@ -78,6 +82,27 @@ public class FileServiceImpl implements FileService {
         mode.setValue(md5Str);
         mode.setUserId(userId);
         fileListMapper.insert(mode);
-        return true;
+        return mode.getId();
+    }
+
+    @Override
+    public void loadFile(HttpServletResponse response, Integer fileId, Integer userId) throws IOException {
+        FileTableDataMode fileMode = fileListMapper.selectById(fileId);
+        if (fileMode == null || !fileMode.getUserId().equals(userId) || fileMode.isDir()) {
+            response.setStatus(403);
+            return;
+        }
+        String path = fileMapper.findPathByHash(fileMode.getValue());
+        File f = new File(path);
+        if (f.exists()) {
+            FileInputStream fileInputStream = new FileInputStream(path);
+            response.setContentType("application/force-download");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + java.net.URLEncoder.encode(fileMode.getName(), "UTF-8"));
+            response.setContentLength((int) f.length());
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            StreamUtils.copy(fileInputStream, servletOutputStream);
+        } else {
+            response.setStatus(500);
+        }
     }
 }

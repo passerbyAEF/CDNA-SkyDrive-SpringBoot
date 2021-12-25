@@ -13,8 +13,9 @@ public class DirMode {
     public DirMode(FileTableDataMode mode) {
         name = mode.getName();
         time = mode.getTime();
+        id=mode.getId();
     }
-
+    Integer id;
     String type = "dir";
     String name;
     @JsonFormat(pattern = "yyyy-MM-dd")
