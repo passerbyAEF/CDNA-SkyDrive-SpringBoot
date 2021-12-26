@@ -1,6 +1,5 @@
 package com.example.cdnaskydrivejava.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -13,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * 用于表示用户的实体类
+ * 同时实现UserDetails接口对接Spring Security认证
+ */
 @Data
 @TableName("usertable")
 public class UserMode implements UserDetails {
@@ -24,7 +27,7 @@ public class UserMode implements UserDetails {
     @JsonProperty("Pwds")
     @TableField("PassWord")
     String pwd;
-    @TableField("FileID")
+    @TableField("DirID")
     Integer fileId;
     @TableField(select = false)
     List<GrantedAuthority> authorities;

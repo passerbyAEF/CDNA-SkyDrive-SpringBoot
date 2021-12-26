@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
+/**
+ * 登录Controller
+ */
 @ResponseBody
 @Controller
 @RequestMapping("api")

@@ -43,7 +43,7 @@ public class FileListController extends BaseController {
         ....
     ]
      */
-
+    //获取文件夹下属的文件列表
     @PostMapping("list")
     public ReturnMode<Object> getList(@RequestBody Map<String, Integer> map) {
         UserMode user = (UserMode) getUser().getPrincipal();
@@ -57,12 +57,14 @@ public class FileListController extends BaseController {
         return Error("用户权限错误");
     }
 
+    //获取一个用户的根文件夹
     @GetMapping("rooturl")
     public ReturnMode<Object> getRootUrl() {
         UserMode user = (UserMode) getUser().getPrincipal();
         return OK(userService.getRootUrlId(user));
     }
 
+    //添加文件夹
     @PostMapping("AddDir")
     public ReturnMode<Object> addDir(@RequestBody Map<String, String> map) {
         UserMode user = (UserMode) getUser().getPrincipal();
@@ -72,11 +74,13 @@ public class FileListController extends BaseController {
         return Error("用户权限错误");
     }
 
+    //获取一个文件/文件夹的上级文件夹
     @PostMapping("BackDir")
     public ReturnMode<Object> backDir(@RequestBody Map<String, Integer> map){
         return OK(fileListService.toBackDir(map.get("Dir")));
     }
 
+    //删除文件/文件夹
     @PostMapping("DeleteFile")
     public ReturnMode<Object> deleteFile(@RequestBody Map<String, Integer> map){
         UserMode user = (UserMode) getUser().getPrincipal();

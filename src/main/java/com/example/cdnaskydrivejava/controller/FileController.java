@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *文件的上传下载相关Controller
+ */
 @ResponseBody
 @Controller
 @RequestMapping("api/Load/")

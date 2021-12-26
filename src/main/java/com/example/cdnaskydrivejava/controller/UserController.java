@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
+/**
+ * 关于用户信息和相关操作的Controller
+ */
 @Controller
 @ResponseBody
 @RequestMapping("api")
@@ -27,6 +30,7 @@ public class UserController extends BaseController {
     @Autowired
     RedisUtil redisUtil;
 
+    //现在此方法只获取用户名，因为前端只用到这个数据
     @GetMapping("GetUserData")
     public ReturnMode<Object> getUserData(){
         UserMode user = (UserMode) getUser().getPrincipal();
@@ -35,6 +39,7 @@ public class UserController extends BaseController {
         return OK(json);
     }
 
+    //登录
     @PostMapping("Register")
     public ReturnMode<Object> register(HttpServletResponse response, @RequestParam String Name, @RequestParam String Pwds, @RequestParam String PhoneNumber) throws IOException {
         if (!userService.Register(Name, Pwds, PhoneNumber)) {

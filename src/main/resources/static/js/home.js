@@ -248,7 +248,7 @@ function CreateFileDirList(Dir) {
         Div.style.display = "none";
         Div.innerHTML = "<img src=\"../images/mv.png\">" +
             "<img src=\"../images/rename.png\">" +
-            "<img src=\"../images/delete.png\" id='" + Dir[i].id + "' onclick='DeleteFile(this.id)'>";
+            "<img src=\"../images/delete.png\" id='" + Dir[i].id + "' onclick='DeleteFile(this.id);'>";
         DirList[i].appendChild(Div);
     }
     var LiDir = document.querySelectorAll(".file-list-container .file-name-dir");
@@ -288,10 +288,11 @@ function CreateFileList(File) {
             "<img src=\"../images/cp.png\">" +
             "<img src=\"../images/rename.png\">" +
             "<img src=\"../images/down.png\" id=\"" + File[i].id + "\"" + "onclick=\"Down('" + File[i].name + "',this.id)\"" + ">" +
-            "<img src=\"../images/delete.png\" id='" + File[i].id + "' onclick='DeleteFile(this.id)'>";
+            "<img src=\"../images/delete.png\" id='" + File[i].id + "' onclick='DeleteFile(this.id);'>";
         CheckBox.type = "checkbox";
         CheckBox.className = "checkbox";
         CheckBox.value = File[i].name;
+        CheckBox.name = File[i].id;
         FileLiName[i].appendChild(CheckBox);
         FileLiName[i].appendChild(Div);
     }
@@ -324,7 +325,15 @@ function Down(fileName, id) {
 function LoopDown() {
     var checkbox = document.querySelectorAll(".checkbox:checked");
     for (i = 0; i < checkbox.length; i++) {
-        Down(checkbox[i].value);
+        Down(checkbox[i].value,checkbox[i].name);
+    }
+}
+
+//多个下载
+function LoopDelete() {
+    var checkbox = document.querySelectorAll(".checkbox:checked");
+    for (i = 0; i < checkbox.length; i++) {
+        DeleteFile(checkbox[i].name);
     }
 }
 
@@ -448,7 +457,6 @@ function SetContorBox() {
 function DeleteFile(id) {
     var data = {FileId: id};
     var suc = function (mes) {
-        window.alert("删除成功");
         GetUserFileList(NowPath);
     }
     post("api/DeleteFile",data, suc, null);

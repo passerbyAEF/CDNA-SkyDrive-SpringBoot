@@ -12,7 +12,7 @@ import java.util.Date;
  * 用于承载数据库表数据的实体类
  */
 @Data
-@TableName("userfiletable")
+@TableName("filetable")
 public class FileTableDataMode {
     @TableId(value = "ID",type = IdType.AUTO)
     Integer id;
