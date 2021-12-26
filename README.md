@@ -5,3 +5,10 @@
 （移动、复制、剪切功能依旧没做，因为我不会写前端的弹框）\
 修复了之前APS.NET版本的一些bug\
 文件上传不支持大过200MB的文件，我没有做分片上传，只是把包限制拉到了200MB。
+
+##使用技术:
++ Spring Boot
++ Spring Security
++ Redis
++ Mybatis & Mybatis-Plus
++ thymeleaf(因为没有什么Nginx，路径上带个.html难看，所以加入这个转发前端，项目本质上是前后端分离的，thymeleaf不参与前端渲染)
