@@ -46,7 +46,7 @@ public class FileListController extends BaseController {
     //获取文件夹下属的文件列表
     @PostMapping("list")
     public ReturnMode<Object> getList(@RequestBody Map<String, Integer> map) {
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         if (!map.containsKey("url")) {
             return Error("参数错误");
         }
@@ -60,14 +60,14 @@ public class FileListController extends BaseController {
     //获取一个用户的根文件夹
     @GetMapping("rooturl")
     public ReturnMode<Object> getRootUrl() {
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         return OK(userService.getRootUrlId(user));
     }
 
     //添加文件夹
     @PostMapping("AddDir")
     public ReturnMode<Object> addDir(@RequestBody Map<String, String> map) {
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         if (fileListService.addDir(map.get("DirName"), Integer.parseInt(map.get("Path")), user.getId())) {
             return OK("添加成功");
         }
@@ -83,10 +83,29 @@ public class FileListController extends BaseController {
     //删除文件/文件夹
     @PostMapping("DeleteFile")
     public ReturnMode<Object> deleteFile(@RequestBody Map<String, Integer> map){
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         if(fileListService.delete(map.get("FileId"),user.getId())){
             return OK("删除成功");
         }
         return Error("用户权限错误");
     }
+
+    @GetMapping("TextList")
+    public ReturnMode<Object> GetTextList (){
+        UserMode user = getUser();
+        return OK(fileListService.findTextFile(user.getFileId()));
+    }
+
+    @GetMapping("PictureList")
+    public ReturnMode<Object> GetPictureList (){
+        UserMode user = getUser();
+        return OK(fileListService.findPictureFile(user.getFileId()));
+    }
+
+    @GetMapping("MediaList")
+    public ReturnMode<Object> GetMediaList (){
+        UserMode user = getUser();
+        return OK(fileListService.findMediaFile(user.getFileId()));
+    }
+
 }

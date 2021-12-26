@@ -26,17 +26,7 @@ public class FileListServiceImpl implements FileListService {
 
     @Override
     public List<Object> findOfDir(Integer dirId) {
-        List<FileTableDataMode> list = fileListMapper.SelectByDir(dirId);
-        List<Object> datalist = new ArrayList<>();
-        for (FileTableDataMode l : list) {
-            if (l.isDir()) {
-                datalist.add(new DirMode(l));
-            } else {
-                File file = new File(fileListMapper.SelectFileByFileID(l.getValue()));
-                datalist.add(new FileMode(l, file.length()));
-            }
-        }
-        return datalist;
+        return TableDataToMode(fileListMapper.SelectByDir(dirId));
     }
 
     @Override
@@ -72,6 +62,35 @@ public class FileListServiceImpl implements FileListService {
             deleteFile(id);
         }
         return true;
+    }
+
+    @Override
+    public List<Object> findTextFile(Integer userid) {
+        return TableDataToMode(fileListMapper.SelectText(userid));
+    }
+
+    @Override
+    public List<Object> findPictureFile(Integer userid) {
+        return TableDataToMode(fileListMapper.SelectPicture(userid));
+    }
+
+    @Override
+    public List<Object> findMediaFile(Integer userid) {
+        return TableDataToMode(fileListMapper.SelectMedia(userid));
+    }
+
+    //将数据库实体转换成分别的实体
+    List<Object> TableDataToMode(List<FileTableDataMode> list){
+        List<Object> datalist = new ArrayList<>();
+        for (FileTableDataMode l : list) {
+            if (l.isDir()) {
+                datalist.add(new DirMode(l));
+            } else {
+                File file = new File(fileListMapper.SelectFileByFileID(l.getValue()));
+                datalist.add(new FileMode(l, file.length()));
+            }
+        }
+        return datalist;
     }
 
     void deleteFile(Integer id) {

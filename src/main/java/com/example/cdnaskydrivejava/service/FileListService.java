@@ -13,4 +13,10 @@ public interface FileListService {
     Integer toBackDir(Integer dirId);
 
     Boolean delete(Integer id,Integer userid);
+
+    List<Object> findTextFile(Integer userid);
+
+    List<Object> findPictureFile(Integer userid);
+
+    List<Object> findMediaFile(Integer userid);
 }

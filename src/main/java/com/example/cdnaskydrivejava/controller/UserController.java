@@ -33,7 +33,7 @@ public class UserController extends BaseController {
     //现在此方法只获取用户名，因为前端只用到这个数据
     @GetMapping("GetUserData")
     public ReturnMode<Object> getUserData(){
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         JSONObject json=new JSONObject();
         json.put("name",user.getName());
         return OK(json);

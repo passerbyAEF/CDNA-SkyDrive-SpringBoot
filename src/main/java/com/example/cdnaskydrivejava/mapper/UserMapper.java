@@ -12,6 +12,6 @@ import org.apache.ibatis.annotations.Select;
 public interface UserMapper extends BaseMapper<UserMode> {
 
     //获取根目录
-    @Select("select FileID from usertable where ID=#{ID} limit 1")
+    @Select("select DirID from usertable where ID=#{ID} limit 1")
     Integer getRootUrlId(Integer ID);
 }

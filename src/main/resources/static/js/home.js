@@ -325,7 +325,7 @@ function Down(fileName, id) {
 function LoopDown() {
     var checkbox = document.querySelectorAll(".checkbox:checked");
     for (i = 0; i < checkbox.length; i++) {
-        Down(checkbox[i].value,checkbox[i].name);
+        Down(checkbox[i].value, checkbox[i].name);
     }
 }
 
@@ -459,7 +459,7 @@ function DeleteFile(id) {
     var suc = function (mes) {
         GetUserFileList(NowPath);
     }
-    post("api/DeleteFile",data, suc, null);
+    post("api/DeleteFile", data, suc, null);
 }
 
 //退出登陆
@@ -484,14 +484,49 @@ function GetRootUrl() {
     return data;
 }
 
-function GetUser(){
-    get("api/GetUserData",null,function (me){
+function GetUser() {
+    get("api/GetUserData", null, function (me) {
         var Name = document.getElementById("user-head-name");
         var ContrName = document.getElementById("user-controller-name");
         Name.innerHTML = me.data.name;
         ContrName.innerHTML = me.data.name;
         SetContorBox();
     });
+}
+
+function GetMediaList() {
+    get("api/MediaList",null,function (me){
+        if (me.message === "OK") {
+            ClearFileList();
+            var FileList = me.data;
+            FindFileType(FileList);
+        }
+    });
+}
+
+function GetPictureList() {
+    get("api/PictureList",null,function (me){
+        if (me.message === "OK") {
+            ClearFileList();
+            var FileList = me.data;
+            FindFileType(FileList);
+        }
+    });
+}
+
+function GetTextList() {
+    get("api/TextList",null,function (me){
+        if (me.message === "OK") {
+            ClearFileList();
+            var FileList = me.data;
+            FindFileType(FileList);
+        }
+    });
+}
+
+function ToRootDir() {
+    NowPath = rootPath;
+    GetUserFileList(NowPath);
 }
 
 function Load() {

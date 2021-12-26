@@ -31,7 +31,7 @@ public class FileController extends BaseController {
     @PostMapping("Up")
     public ReturnMode<Object> fileUpLoad(HttpServletRequest request, @RequestParam Map<String, MultipartFile> file) {
         Integer dirId = Integer.parseInt(request.getHeader("Path"));
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         List<Integer> list = new ArrayList<>();
         for (MultipartFile multipartFile : file.values()) {
             Integer i = fileService.addFile(multipartFile, dirId, user.getId());
@@ -44,7 +44,7 @@ public class FileController extends BaseController {
     @GetMapping("Down")
     public void fileDownLoad(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Integer fileId = Integer.parseInt(request.getHeader("File"));
-        UserMode user = (UserMode) getUser().getPrincipal();
+        UserMode user = getUser();
         fileService.loadFile(response,fileId,user.getId());
     }
 
