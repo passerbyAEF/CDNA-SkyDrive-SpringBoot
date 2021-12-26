@@ -59,4 +59,34 @@ public class FileListServiceImpl implements FileListService {
         FileTableDataMode mode = fileListMapper.selectById(dirId);
         return mode.getUP();
     }
+
+    @Override
+    public Boolean delete(Integer id, Integer userid) {
+        FileTableDataMode mode = fileListMapper.selectById(id);
+        if (!mode.getUserId().equals(userid)) {
+            return false;
+        }
+        if (mode.isDir()) {
+            deleteDir(id);
+        }else{
+            deleteFile(id);
+        }
+        return true;
+    }
+
+    void deleteFile(Integer id) {
+        fileListMapper.deleteById(id);
+    }
+
+    void deleteDir(Integer id) {
+        List<FileTableDataMode> list=fileListMapper.SelectByDir(id);
+        for (FileTableDataMode mode : list) {
+            if (mode.isDir()) {
+                deleteDir(mode.getId());
+            } else {
+                deleteFile(mode.getId());
+            }
+        }
+        fileListMapper.deleteById(id);
+    }
 }

@@ -76,4 +76,13 @@ public class FileListController extends BaseController {
     public ReturnMode<Object> backDir(@RequestBody Map<String, Integer> map){
         return OK(fileListService.toBackDir(map.get("Dir")));
     }
+
+    @PostMapping("DeleteFile")
+    public ReturnMode<Object> deleteFile(@RequestBody Map<String, Integer> map){
+        UserMode user = (UserMode) getUser().getPrincipal();
+        if(fileListService.delete(map.get("FileId"),user.getId())){
+            return OK("删除成功");
+        }
+        return Error("用户权限错误");
+    }
 }

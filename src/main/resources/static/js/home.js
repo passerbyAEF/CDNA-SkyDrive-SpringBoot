@@ -246,7 +246,9 @@ function CreateFileDirList(Dir) {
         var Div = document.createElement("div");
         Div.className = "file-handle";
         Div.style.display = "none";
-        Div.innerHTML = "<img src=\"../images/mv.png\">" + "<img src=\"../images/rename.png\">" + "<img src=\"../images/delete.png\">";
+        Div.innerHTML = "<img src=\"../images/mv.png\">" +
+            "<img src=\"../images/rename.png\">" +
+            "<img src=\"../images/delete.png\" id='" + Dir[i].id + "' onclick='DeleteFile(this.id)'>";
         DirList[i].appendChild(Div);
     }
     var LiDir = document.querySelectorAll(".file-list-container .file-name-dir");
@@ -286,7 +288,7 @@ function CreateFileList(File) {
             "<img src=\"../images/cp.png\">" +
             "<img src=\"../images/rename.png\">" +
             "<img src=\"../images/down.png\" id=\"" + File[i].id + "\"" + "onclick=\"Down('" + File[i].name + "',this.id)\"" + ">" +
-            "<img src=\"../images/delete.png\">";
+            "<img src=\"../images/delete.png\" id='" + File[i].id + "' onclick='DeleteFile(this.id)'>";
         CheckBox.type = "checkbox";
         CheckBox.className = "checkbox";
         CheckBox.value = File[i].name;
@@ -443,6 +445,15 @@ function SetContorBox() {
 
 }
 
+function DeleteFile(id) {
+    var data = {FileId: id};
+    var suc = function (mes) {
+        window.alert("删除成功");
+        GetUserFileList(NowPath);
+    }
+    post("api/DeleteFile",data, suc, null);
+}
+
 //退出登陆
 function ExitLogin() {
     var cook = "Token=;expires=Thu, 01 Jan 1970 00: 00: 00 GMT;path=/";
@@ -465,16 +476,21 @@ function GetRootUrl() {
     return data;
 }
 
+function GetUser(){
+    get("api/GetUserData",null,function (me){
+        var Name = document.getElementById("user-head-name");
+        var ContrName = document.getElementById("user-controller-name");
+        Name.innerHTML = me.data.name;
+        ContrName.innerHTML = me.data.name;
+        SetContorBox();
+    });
+}
+
 function Load() {
     GetUserFileList(NowPath);
     var inputbtn = document.getElementById("input-file");
     inputbtn.addEventListener("change", PostFile());
-    var Name = document.getElementById("user-head-name");
-    var CookName = Cookies.get('UserName');
-    Name.innerHTML = CookName;
-    var ContrName = document.getElementById("user-controller-name");
-    ContrName.innerHTML = CookName;
-    SetContorBox();
+    GetUser();
     var loadbox = document.getElementById("load-box");
     var x = 0;
     var y = 0;
