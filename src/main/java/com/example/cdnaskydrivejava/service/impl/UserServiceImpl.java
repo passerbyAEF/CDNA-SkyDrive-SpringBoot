@@ -2,7 +2,9 @@ package com.example.cdnaskydrivejava.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.cdnaskydrivejava.mapper.FileListMapper;
 import com.example.cdnaskydrivejava.mapper.UserMapper;
+import com.example.cdnaskydrivejava.model.FileTableDataMode;
 import com.example.cdnaskydrivejava.model.UserMode;
 import com.example.cdnaskydrivejava.service.UserService;
 import com.example.cdnaskydrivejava.util.RedisUtil;
@@ -15,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +27,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserMode> implement
     RedisUtil redisUtil;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    FileListMapper fileListMapper;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -46,5 +51,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserMode> implement
     @Override
     public Integer getRootUrlId(UserMode user) {
         return userMapper.getRootUrlId(user.getId());
+    }
+
+    @Override
+    public Boolean Register(String Name, String Pwds, String PhoneNumber) {
+        if(loadUserByUsername(Name)!=null) return false;
+        FileTableDataMode mode=new FileTableDataMode();
+        mode.setName(".");
+        mode.setState(1);
+        mode.setTime(new Date());
+        mode.setUP(0);
+        mode.setUserId(-1);
+        fileListMapper.insert(mode);
+        UserMode user=new UserMode();
+        user.setPwd(Pwds);
+        user.setName(Name);
+        user.setFileId(mode.getId());
+        userMapper.insert(user);
+        mode.setUserId(user.getId());
+        fileListMapper.updateById(mode);
+        return true;
     }
 }

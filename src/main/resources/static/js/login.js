@@ -1,15 +1,13 @@
 ﻿function Login() {
-    var LoginInfo = {Name: "", Pwds: ""};
-    LoginInfo.Name = document.getElementById("input-user").value.replace(/(^\s*)|(\s*$)/g, '');
-    LoginInfo.Pwds = hex_md5(document.getElementById("input-passwd").value.replace(/(^\s*)|(\s*$)/g, ''));
-    if ((LoginInfo.Name || LoginInfo.Pwds) === "" || (LoginInfo.Name || LoginInfo.Pwds) === undefined || (LoginInfo.Name || LoginInfo.Pwds) == null) {
+    var username = document.getElementById("input-user");
+    var passwd = document.getElementById("input-passwd");
+    username.value=username.value.replace(/(^\s*)|(\s*$)/g, '');
+    passwd.value=passwd.value.replace(/(^\s*)|(\s*$)/g, '');
+    if ((username.value || passwd.value) === "" || (username.value || passwd.value) === undefined || (username.value || passwd.value) == null) {
         EchoLoginError("用户名或密码不能为空");
     } else {
-        var form = $("<form id='form' style='opacity: 1' action='/api/login' method='post'>" +
-            "<input type='text' style='opacity: 1' name='Name' value='" + LoginInfo.Name + "'>" +
-            "<input type='password' style='opacity: 1' name='Pwds' value='" + LoginInfo.Pwds + "'>" +
-            "</form>")
-        $(document.body).append(form);
+        var form = $("#form")
+        passwd.value=hex_md5(passwd.value);
         form.submit();
     }
 }
