@@ -26,7 +26,7 @@ public interface FileListMapper extends BaseMapper<FileTableDataMode> {
     String SelectFileByFileID(String hashStr);
 
     //检索一个用户拥有的文本文件(.txt .docx .doc .xml .ppt .xls .xlsx .wps .html .pdf)
-    @Select("SELECT * FROM filetable where userId=#{userId} and " +
+    @Select("SELECT * FROM filetable where userId=#{userId} and (" +
             "name like '%.txt' or " +
             "name like '%.docx' or " +
             "name like '%.doc' or " +
@@ -36,29 +36,28 @@ public interface FileListMapper extends BaseMapper<FileTableDataMode> {
             "name like '%.xlsx' or " +
             "name like '%.wps' or " +
             "name like '%.html' or " +
-            "name like '%.pdf' " +
-            ";")
+            "name like '%.pdf' )")
     List<FileTableDataMode> SelectText(Integer userId);
 
     //检索一个用户拥有的图片文件(.jpg .png .gif .psd .ppd .bmp)
-    @Select("SELECT * FROM filetable where userId=#{userId} and " +
+    @Select("SELECT * FROM filetable where userId=#{userId} and (" +
             "name like '%.jpg' or " +
             "name like '%.png' or " +
             "name like '%.gif' or " +
             "name like '%.psd' or " +
             "name like '%.ppd' or " +
-            "name like '%.bmp' " +
+            "name like '%.bmp' )" +
             ";")
     List<FileTableDataMode> SelectPicture(Integer userId);
 
     //检索一个用户拥有的视频文件(.avi .rmvb .rm .mp4 .flv .mpg)
-    @Select("SELECT * FROM filetable where userId=#{userId} and " +
+    @Select("SELECT * FROM filetable where userId=#{userId} and (" +
             "name like '%.mp4' or " +
             "name like '%.avi' or " +
             "name like '%.rmvb' or " +
             "name like '%.rm' or " +
             "name like '%.flv' or " +
-            "name like '%.mpg' " +
+            "name like '%.mpg' )" +
             ";")
     List<FileTableDataMode> SelectMedia(Integer userId);
 }

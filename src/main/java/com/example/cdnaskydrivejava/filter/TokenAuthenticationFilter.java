@@ -34,9 +34,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 token = c.getValue();
         }
         if(token!=null){
+            //如果有Token
             String str=redisUtil.get(token);
             if(str!=null){
+                //如果Redis中存放着Token，就提取出缓存在Redis中的用户信息
                 JSONObject redisJson = JSONObject.parseObject(str);
+                //通过缓存信息实例化用户实体
                 UserMode user = new UserMode();
                 user.setFileId(Integer.parseInt(redisJson.getString("fileId")));
                 user.setId(Integer.parseInt(redisJson.getString("id")));
@@ -48,6 +51,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     authList.add(new SimpleGrantedAuthority(j.getString("authority")));
                 }
                 user.setAuthorities(authList);
+                //将用户实体存放进Security上下文中
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

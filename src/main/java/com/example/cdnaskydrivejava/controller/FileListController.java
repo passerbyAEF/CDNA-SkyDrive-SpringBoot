@@ -93,19 +93,19 @@ public class FileListController extends BaseController {
     @GetMapping("TextList")
     public ReturnMode<Object> GetTextList (){
         UserMode user = getUser();
-        return OK(fileListService.findTextFile(user.getFileId()));
+        return OK(fileListService.findTextFile(user.getId()));
     }
 
     @GetMapping("PictureList")
     public ReturnMode<Object> GetPictureList (){
         UserMode user = getUser();
-        return OK(fileListService.findPictureFile(user.getFileId()));
+        return OK(fileListService.findPictureFile(user.getId()));
     }
 
     @GetMapping("MediaList")
     public ReturnMode<Object> GetMediaList (){
         UserMode user = getUser();
-        return OK(fileListService.findMediaFile(user.getFileId()));
+        return OK(fileListService.findMediaFile(user.getId()));
     }
 
 }

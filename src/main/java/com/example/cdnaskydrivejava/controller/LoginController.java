@@ -34,6 +34,7 @@ public class LoginController extends BaseController {
         UserMode user = new UserMode();
         user.setName(Name);
         user.setPwd(Pwds);
+        //检查登录数据合法性
         if (StringUtils.isEmpty(user.getName()) || StringUtils.isEmpty(user.getPwd())) {
             response.sendRedirect("/login?meg=null");
             return Error("用户名或密码为空！");
@@ -47,6 +48,7 @@ public class LoginController extends BaseController {
             response.sendRedirect("/login?meg=uperror");
             return Error("用户名或密码错误！");
         }
+        //登录数据合法性得到验证，派发Token
         String hashStr = DigestUtils.md5DigestAsHex((userMode.getName() + ":" + new Date()).getBytes());
         redisUtil.addAndSetTimeOut(hashStr, JSON.toJSONString(userMode));
         Cookie cookie = new Cookie("Token", hashStr);
